@@ -1,11 +1,32 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'cognitive_mode_selection.dart';
 import 'teacher_mode_dashboard.dart';
+import 'login_page.dart';
 
-void main() {
-  
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+        apiKey: "AIzaSyAOvPD-RHAct_o4AG8Pxe6J-o33MIT7LI4",
+        authDomain: "neuronest-adfd9.firebaseapp.com",
+        projectId: "neuronest-adfd9",
+        storageBucket: "neuronest-adfd9.appspot.com",
+        messagingSenderId: "625505198755",
+        appId: "1:625505198755:web:e1a0b54f6dfbb606789516",
+        measurementId: "G-XB88DGHMH4",
+      ),
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
+
   runApp(const NeuroNestApp());
 }
 
@@ -15,13 +36,15 @@ class NeuroNestApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'NeuroNest',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         textTheme: GoogleFonts.poppinsTextTheme(),
       ),
-      home: const HomeScreen(),
+      home: FirebaseAuth.instance.currentUser == null
+          ? const LoginPage()
+          : const HomeScreen(), // or TeacherModeDashboard()
     );
   }
 }
@@ -43,66 +66,76 @@ class HomeScreen extends StatelessWidget {
               maxHeight: 800,
             ),
             child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: screenHeight * 0.04),
-                    const Text(
-                      '🧠 NeuroNest',
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blueAccent,
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: screenHeight * 0.04),
+                  const Text(
+                    '🧠 NeuroNest',
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blueAccent,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Cognitive Rehab & Autism Learning Support',
+                    style: TextStyle(fontSize: 18, color: Colors.black87),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: screenHeight * 0.05),
+                  InteractiveCard(
+                    title: '🧠 Cognitive Rehab Mode',
+                    subtitle: 'Memory • Focus • Flexibility (ADHD & MCI)',
+                    color: Colors.blueAccent,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const CognitiveModeSelectionScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: screenHeight * 0.06),
+                  InteractiveCard(
+                    title: '👩‍🏫 Teacher Mode (Autism)',
+                    subtitle: 'Tools for Teaching Autistic Children',
+                    color: Colors.green,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const TeacherModeDashboard(),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: screenHeight * 0.06),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      BottomIcon(
+                        icon: Icons.bar_chart,
+                        label: 'Progress',
+                        onTap: () {},
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Cognitive Rehab & Autism Learning Support',
-                      style: TextStyle(fontSize: 18, color: Colors.black87),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: screenHeight * 0.05),
-
-                    InteractiveCard(
-                      title: '🧠 Cognitive Rehab Mode',
-                      subtitle: 'Memory • Focus • Flexibility (ADHD & MCI)',
-                       color: Colors.blueAccent,
-                       onTap: () {
-                        Navigator.push(
-                          context,
-                           MaterialPageRoute(builder: (_) => const CognitiveModeSelectionScreen()),
-                        );
-                       },
-
-                    ),
-                    SizedBox(height: screenHeight * 0.06),
-                    
-                    InteractiveCard(
-                      title: '👩‍🏫 Teacher Mode (Autism)',
-                      subtitle: 'Tools for Teaching Autistic Children',
-                      color: Colors.green,
-                      onTap: () {
-                         Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const TeacherModeDashboard()),
-                         );
-                      },
-
-                    ),
-                    SizedBox(height: screenHeight * 0.06),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        BottomIcon(icon: Icons.bar_chart, label: 'Progress', onTap: () {}),
-                        BottomIcon(icon: Icons.settings, label: 'Settings', onTap: () {}),
-                        BottomIcon(icon: Icons.info, label: 'About', onTap: () {}),
-                      ],
-                    ),
-                  ],
-                ),
+                      BottomIcon(
+                        icon: Icons.settings,
+                        label: 'Settings',
+                        onTap: () {},
+                      ),
+                      BottomIcon(
+                        icon: Icons.info,
+                        label: 'About',
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -118,7 +151,8 @@ class InteractiveCard extends StatelessWidget {
   final Color color;
   final VoidCallback onTap;
 
-  const InteractiveCard({super.key, 
+  const InteractiveCard({
+    super.key,
     required this.title,
     required this.subtitle,
     required this.color,
@@ -149,7 +183,11 @@ class InteractiveCard extends StatelessWidget {
           children: [
             Text(
               title,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: color),
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
             ),
             const SizedBox(height: 5),
             Text(
@@ -168,7 +206,12 @@ class BottomIcon extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const BottomIcon({super.key, required this.icon, required this.label, required this.onTap});
+  const BottomIcon({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -181,30 +224,6 @@ class BottomIcon extends StatelessWidget {
           Text(label, style: const TextStyle(fontSize: 12)),
         ],
       ),
-    );
-  }
-}
-
-class CognitiveModeScreen extends StatelessWidget {
-  const CognitiveModeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Cognitive Rehab Mode')),
-      body: const Center(child: Text('Cognitive Mode Games Coming Soon...')),
-    );
-  }
-}
-
-class TeacherModeScreen extends StatelessWidget {
-  const TeacherModeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Teacher Mode (Autism)')),
-      body: const Center(child: Text('Teacher Mode Tools Coming Soon...')),
     );
   }
 }
