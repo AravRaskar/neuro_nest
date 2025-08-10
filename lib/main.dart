@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'cognitive_mode_selection.dart';
 import 'teacher_mode_dashboard.dart';
 import 'login_page.dart';
+import 'chat_screen.dart'; // ✅ Added import for chatbot
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -110,6 +111,21 @@ class HomeScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (_) => const TeacherModeDashboard(),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: screenHeight * 0.06),
+                  // ✅ New Chatbot Card
+                  InteractiveCard(
+                    title: '💬 NeuroNest Chatbot',
+                    subtitle: 'AI Assistant for Learning & Support',
+                    color: Colors.purple,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ChatScreen(),
                         ),
                       );
                     },
