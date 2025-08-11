@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'adhd_dashboard.dart';
 import 'mci_dashboard.dart';
+import 'arrow_game.dart'; // <-- Added for Arrow Game
 
 class CognitiveModeSelectionScreen extends StatelessWidget {
   const CognitiveModeSelectionScreen({super.key});
@@ -119,6 +120,31 @@ class CognitiveModeSelectionScreen extends StatelessWidget {
                         Text('Memory • Cognitive Flexibility • Focus',
                             style: TextStyle(fontSize: 12)),
                       ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Arrow Game Quick Access Button
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 213, 95, 95),
+                      minimumSize: const Size(double.infinity, 60),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const ArrowGamePage()),
+                      );
+                    },
+                    child: const Text(
+                      '🔴 Play Arrow Game',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
 

@@ -15,7 +15,7 @@ class TeacherModeDashboard extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF0F8FF),
       appBar: AppBar(
-        title: const Text('Teacher Mode'),
+        title: const Text('Guidance Dashboard'),
         backgroundColor: Colors.green,
       ),
       body: SafeArea(
@@ -30,7 +30,7 @@ class TeacherModeDashboard extends StatelessWidget {
               child: Column(
                 children: [
                   const Text(
-                    '👩‍🏫 Teacher Mode',
+                    '👩‍🏫 Guidance Dashboard',
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -59,10 +59,10 @@ class TeacherModeDashboard extends StatelessWidget {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (_) => const EmotionGameDashboard()),
+                            MaterialPageRoute(
+                                builder: (_) => const EmotionGameDashboard()),
                           );
                         },
-
                       ),
                       dashboardButton(
                         context,
@@ -71,9 +71,11 @@ class TeacherModeDashboard extends StatelessWidget {
                         color: Colors.blueAccent,
                         onTap: () {
                           Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const RoutineBuilderDashboard()),
-                         );
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    const RoutineBuilderDashboard()),
+                          );
                         },
                       ),
                     ],
@@ -94,7 +96,8 @@ class TeacherModeDashboard extends StatelessWidget {
                           // Inside your Teacher Dashboard button
                           Navigator.push(
                             context,
-                             MaterialPageRoute(builder: (_) => const CommunicationBoard()),
+                            MaterialPageRoute(
+                                builder: (_) => const CommunicationBoard()),
                           );
                         },
                       ),
@@ -107,9 +110,9 @@ class TeacherModeDashboard extends StatelessWidget {
                           // Navigate to Progress Journal
                           Navigator.push(
                             context,
-                             MaterialPageRoute(builder: (_) => const ProgressJournal()),
-);
-
+                            MaterialPageRoute(
+                                builder: (_) => const ProgressJournal()),
+                          );
                         },
                       ),
                     ],
@@ -165,9 +168,7 @@ class TeacherModeDashboard extends StatelessWidget {
               label,
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: color,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600),
+                  color: color, fontSize: 14, fontWeight: FontWeight.w600),
             ),
           ],
         ),

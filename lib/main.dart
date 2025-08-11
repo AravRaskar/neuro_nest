@@ -110,7 +110,7 @@ class HomeScreen extends StatelessWidget {
 
                   // Teacher Mode
                   InteractiveCard(
-                    title: '👩‍🏫 Teacher Mode (Autism)',
+                    title: '👩‍🏫 Guidance Dashboard',
                     subtitle: 'Tools for Teaching Autistic Children',
                     color: Colors.green,
                     onTap: () {
