@@ -50,7 +50,7 @@ class _MemoryMazeGameState extends State<MemoryMazeGame> {
 
     showPattern = true;
     setState(() {});
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         showPattern = false;
       });

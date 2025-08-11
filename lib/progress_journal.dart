@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class ProgressJournal extends StatefulWidget {
   const ProgressJournal({super.key});
 
@@ -96,8 +95,7 @@ class _ProgressJournalState extends State<ProgressJournal> {
     if (selectedStudent == null) return;
     String summary = '';
     for (int i = 0; i < checklistItems.length; i++) {
-      summary +=
-          '${checklistStatus[i] ? "✔️" : "❌"} ${checklistItems[i]}\n';
+      summary += '${checklistStatus[i] ? "✔️" : "❌"} ${checklistItems[i]}\n';
     }
     summary +=
         '\n📝 Notes:\n${notesController.text.isEmpty ? 'No notes' : notesController.text}';
@@ -178,9 +176,7 @@ class _ProgressJournalState extends State<ProgressJournal> {
             ),
           if (selectedStudent != null)
             IconButton(
-              onPressed: () {
-  
-              },
+              onPressed: () {},
               icon: const Icon(Icons.bar_chart),
               tooltip: 'View Charts',
             ),
@@ -219,8 +215,8 @@ class _ProgressJournalState extends State<ProgressJournal> {
                           value: selectedStudent,
                           hint: const Text('Select'),
                           items: students
-                              .map((s) => DropdownMenuItem(
-                                  value: s, child: Text(s)))
+                              .map((s) =>
+                                  DropdownMenuItem(value: s, child: Text(s)))
                               .toList(),
                           onChanged: (val) {
                             setState(() {
@@ -339,5 +335,3 @@ class _ProgressJournalState extends State<ProgressJournal> {
     );
   }
 }
-
-
