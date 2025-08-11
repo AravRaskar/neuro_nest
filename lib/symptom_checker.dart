@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'emotion_game.dart';
 import 'memory_maze_game.dart';
 import 'dual_task_game.dart'; // ✅ Import your MCI game
@@ -170,7 +171,7 @@ class _SymptomCheckerPageState extends State<SymptomCheckerPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            "Enter Student's Name",
+            "Enter Your Name For Assessment",
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
@@ -178,12 +179,12 @@ class _SymptomCheckerPageState extends State<SymptomCheckerPage> {
             controller: _nameController,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
-              labelText: "Name",
+              labelText: "Enter Name",
             ),
           ),
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (_nameController.text.trim().isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -192,6 +193,15 @@ class _SymptomCheckerPageState extends State<SymptomCheckerPage> {
                 );
                 return;
               }
+
+              // ✅ Save student name to SharedPreferences for ProgressJournal
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              List<String> students = prefs.getStringList('students') ?? [];
+              if (!students.contains(_nameController.text.trim())) {
+                students.add(_nameController.text.trim());
+                await prefs.setStringList('students', students);
+              }
+
               setState(() {
                 _nameEntered = true;
               });
