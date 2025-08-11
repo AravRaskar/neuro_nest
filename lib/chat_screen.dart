@@ -19,20 +19,39 @@ class _ChatScreenState extends State<ChatScreen> {
       "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";
   final String apiUrl = "https://api.groq.com/openai/v1/chat/completions";
 
-  // Cleans response from unwanted characters
+  final List<String> modules = [
+    "MCI Game",
+    "ADHD Game",
+    "Teachers Mode",
+    "Routine Builder",
+    "Communication Board",
+    "Progress Journal",
+    "Emotion Game",
+    "Symptom Detector",
+    "Feedback Collector",
+  ];
+
   String cleanResponse(String text) {
     return text.replaceAll(RegExp(r'[*_/`]+'), '').trim();
   }
 
-  Future<void> _sendMessage() async {
-    if (_controller.text.trim().isEmpty) return;
+  Future<void> _sendMessage([String? userInput]) async {
+    final messageToSend = userInput ?? _controller.text.trim();
+    if (messageToSend.isEmpty) return;
 
-    final userMessage = _controller.text.trim();
     setState(() {
-      _messages.add({"role": "user", "content": userMessage});
+      _messages.add({"role": "user", "content": messageToSend});
       _controller.clear();
       _isLoading = true;
     });
+
+    final systemPrompt = """
+You are NeuroNest’s assistant. NeuroNest is a cognitive support app designed to assist users with ADHD, Mild Cognitive Impairment, and Autism Spectrum Disorder.
+
+When the user sends a module name like "ADHD Game" or "Routine Builder", respond with a clear, friendly, detailed explanation of that module and how it helps users.
+
+Do not assume anything else in the user input, and do not add extra instructions yourself. Keep responses empathetic and easy to understand.
+""";
 
     try {
       final response = await http.post(
@@ -44,11 +63,7 @@ class _ChatScreenState extends State<ChatScreen> {
         body: jsonEncode({
           "model": "meta-llama/llama-4-scout-17b-16e-instruct",
           "messages": [
-            {
-              "role": "system",
-              "content":
-                  "You are NeuroNest’s assistant. Answer briefly based on the app’s features and purpose."
-            },
+            {"role": "system", "content": systemPrompt},
             ..._messages.map((m) => {
                   "role": m["role"]!,
                   "content": m["content"]!,
@@ -89,8 +104,9 @@ class _ChatScreenState extends State<ChatScreen> {
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+        padding:
+            const EdgeInsets.only(bottom: 60, left: 12, right: 12, top: 10),
         decoration: BoxDecoration(
           color: isUser ? Colors.blue[100] : Colors.grey[300],
           borderRadius: BorderRadius.circular(12),
@@ -100,37 +116,28 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget _buildModeButtons() {
-    final modes = [
-      "Basic Assistant",
-      "Cognitive Booster",
-      "Feedback Collector",
-      "Teaching Assistant"
-    ];
+  Widget _buildFloatingModuleButtons() {
     return Positioned(
-      bottom: 70,
+      bottom: 60,
       left: 0,
       right: 0,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(
-          children: modes.map((mode) {
+          children: modules.map((module) {
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue[100],
-                  foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: FloatingActionButton.extended(
+                heroTag: module,
+                backgroundColor: Colors.blue[400],
+                label: Text(
+                  module,
+                  style: const TextStyle(fontSize: 12),
                 ),
                 onPressed: () {
-                  _controller.text = mode;
-                  _sendMessage();
+                  _sendMessage(module); // send only the module name text
                 },
-                child: Text(mode),
               ),
             );
           }).toList(),
@@ -157,7 +164,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               if (_isLoading)
                 const Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: EdgeInsets.only(bottom: 60.0),
                   child: CircularProgressIndicator(),
                 ),
               Padding(
@@ -180,7 +187,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ],
           ),
-          _buildModeButtons(),
+          _buildFloatingModuleButtons(),
         ],
       ),
     );

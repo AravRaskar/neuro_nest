@@ -3,11 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:neuro_nest/settings_page.dart';
 
 import 'cognitive_mode_selection.dart';
 import 'teacher_mode_dashboard.dart';
 import 'login_page.dart';
-import 'chat_screen.dart'; // ✅ Added import for chatbot
+import 'chat_screen.dart';
+import 'symptom_checker.dart';
+import 'about_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,7 +48,7 @@ class NeuroNestApp extends StatelessWidget {
       ),
       home: FirebaseAuth.instance.currentUser == null
           ? const LoginPage()
-          : const HomeScreen(), // or TeacherModeDashboard()
+          : const HomeScreen(),
     );
   }
 }
@@ -88,6 +91,8 @@ class HomeScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: screenHeight * 0.05),
+
+                  // Cognitive Rehab Mode
                   InteractiveCard(
                     title: '🧠 Cognitive Rehab Mode',
                     subtitle: 'Memory • Focus • Flexibility (ADHD & MCI)',
@@ -102,6 +107,8 @@ class HomeScreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: screenHeight * 0.06),
+
+                  // Teacher Mode
                   InteractiveCard(
                     title: '👩‍🏫 Teacher Mode (Autism)',
                     subtitle: 'Tools for Teaching Autistic Children',
@@ -116,7 +123,8 @@ class HomeScreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: screenHeight * 0.06),
-                  // ✅ New Chatbot Card
+
+                  // Chatbot
                   InteractiveCard(
                     title: '💬 NeuroNest Chatbot',
                     subtitle: 'AI Assistant for Learning & Support',
@@ -131,6 +139,24 @@ class HomeScreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: screenHeight * 0.06),
+
+                  // Symptom Checker
+                  InteractiveCard(
+                    title: '🩺 Symptom Checker',
+                    subtitle: 'Check cognitive health symptoms instantly',
+                    color: Colors.redAccent,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SymptomCheckerPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: screenHeight * 0.06),
+
+                  // Bottom icons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -142,12 +168,26 @@ class HomeScreen extends StatelessWidget {
                       BottomIcon(
                         icon: Icons.settings,
                         label: 'Settings',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const SettingsPage(),
+                            ),
+                          );
+                        },
                       ),
                       BottomIcon(
                         icon: Icons.info,
                         label: 'About',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AboutPage(),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
