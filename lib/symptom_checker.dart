@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'emotion_game.dart';
@@ -42,8 +43,39 @@ class _SymptomCheckerPageState extends State<SymptomCheckerPage> {
     }
   }
 
+  /// ✅ Update ProgressJournal locally after game finishes
+  Future<void> _updateProgressAfterGame() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String studentName = _nameController.text.trim();
+    String dateKey =
+        "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}";
+
+    // Load existing journal
+    Map<String, dynamic> journalData = {};
+    String? data = prefs.getString('journal');
+    if (data != null) {
+      journalData = jsonDecode(data);
+    }
+
+    // Ensure student and date entry exist
+    journalData[studentName] ??= {};
+    journalData[studentName][dateKey] ??= {
+      'checklist': [false, false, false, false, false],
+      'notes': '',
+    };
+
+    // Mark "Games Completed" (2nd checklist item) as true
+    List<bool> checklist =
+        List<bool>.from(journalData[studentName][dateKey]['checklist']);
+    checklist[1] = true;
+    journalData[studentName][dateKey]['checklist'] = checklist;
+
+    // Save back to prefs
+    await prefs.setString('journal', jsonEncode(journalData));
+  }
+
   void _checkConditions() {
-    // Count how many selected symptoms match each condition
     Map<String, int> conditionCount = {
       "Autism": 0,
       "ADHD": 0,
@@ -58,7 +90,6 @@ class _SymptomCheckerPageState extends State<SymptomCheckerPage> {
       }
     });
 
-    // If no symptoms selected
     if (conditionCount.values.every((count) => count == 0)) {
       showDialog(
         context: context,
@@ -77,7 +108,6 @@ class _SymptomCheckerPageState extends State<SymptomCheckerPage> {
       return;
     }
 
-    // Sort conditions by match count
     var sortedConditions = conditionCount.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
@@ -87,7 +117,6 @@ class _SymptomCheckerPageState extends State<SymptomCheckerPage> {
         .map((e) => e.key)
         .toList();
 
-    // Show result dialog with clickable condition buttons
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -105,29 +134,32 @@ class _SymptomCheckerPageState extends State<SymptomCheckerPage> {
               runSpacing: 8,
               children: likelyConditions.map((condition) {
                 return ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.pop(context); // close dialog
                     if (condition == "ADHD") {
-                      Navigator.push(
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const MemoryMazeGame(), // ✅ ADHD game
+                          builder: (_) => const MemoryMazeGame(),
                         ),
                       );
+                      await _updateProgressAfterGame();
                     } else if (condition == "MCI") {
-                      Navigator.push(
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const DualTaskGame(), // ✅ MCI game
+                          builder: (_) => const DualTaskGame(),
                         ),
                       );
+                      await _updateProgressAfterGame();
                     } else if (condition == "Autism") {
-                      Navigator.push(
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (_) => const EmotionGame(),
                         ),
                       );
+                      await _updateProgressAfterGame();
                     }
                   },
                   child: Text(condition),
@@ -163,7 +195,6 @@ class _SymptomCheckerPageState extends State<SymptomCheckerPage> {
     );
   }
 
-  // Step 1: Name input screen
   Widget _buildNameInput() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -194,7 +225,6 @@ class _SymptomCheckerPageState extends State<SymptomCheckerPage> {
                 return;
               }
 
-              // ✅ Save student name to SharedPreferences for ProgressJournal
               SharedPreferences prefs = await SharedPreferences.getInstance();
               List<String> students = prefs.getStringList('students') ?? [];
               if (!students.contains(_nameController.text.trim())) {
@@ -213,7 +243,6 @@ class _SymptomCheckerPageState extends State<SymptomCheckerPage> {
     );
   }
 
-  // Step 2: Symptom checker screen
   Widget _buildSymptomChecker() {
     return ListView(
       padding: const EdgeInsets.all(16.0),
