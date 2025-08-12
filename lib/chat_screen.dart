@@ -22,6 +22,8 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<String> modules = [
     "MCI Game",
     "ADHD Game",
+    "Focus Game",
+    "Autism Game",
     "Teachers Mode",
     "Routine Builder",
     "Communication Board",
@@ -104,7 +106,7 @@ Do not assume anything else in the user input, and do not add extra instructions
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
         padding:
             const EdgeInsets.only(bottom: 60, left: 12, right: 12, top: 10),
         decoration: BoxDecoration(
