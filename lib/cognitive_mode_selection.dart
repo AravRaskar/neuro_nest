@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'adhd_dashboard.dart';
 import 'mci_dashboard.dart';
-import 'arrow_game.dart'; // <-- Added for Arrow Game
+import 'arrow_game.dart';
 
 class CognitiveModeSelectionScreen extends StatelessWidget {
   const CognitiveModeSelectionScreen({super.key});

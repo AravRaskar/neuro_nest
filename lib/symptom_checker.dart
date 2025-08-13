@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'emotion_game.dart';
 import 'memory_maze_game.dart';
-import 'dual_task_game.dart'; // ✅ Import your MCI game
+import 'dual_task_game.dart';
 
 class SymptomCheckerPage extends StatefulWidget {
   const SymptomCheckerPage({Key? key}) : super(key: key);
