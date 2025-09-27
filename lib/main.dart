@@ -126,7 +126,7 @@ class HomeScreen extends StatelessWidget {
 
                   // Chatbot
                   InteractiveCard(
-                    title: '💬 NeuroNest Chatbot',
+                    title: '💬 NeuroNest Chat',
                     subtitle: 'AI Assistant for Learning & Support',
                     color: Colors.purple,
                     onTap: () {
